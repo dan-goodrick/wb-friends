@@ -1,27 +1,40 @@
 import { useState, useEffect } from "react";
-import axios from 'axios'
+import axios from "axios";
 
 export default function App() {
-  const [friends, setFriend] = useState([]);
+  let [friends, setFriend] = useState([]);
   let [picture, setPicture] = useState("");
   let [name, setName] = useState("");
   
+  const getSavedFriends = async () => {
+    const res = await axios.get("/api/friends");
+    setFriend(res.data);
+  };
+  useEffect(()=> (getSavedFriends), [])
 
+  // useEffect(() => {
+  //   axios.get("/api/friends").then((response) => {
+  //     friends = setFriend(response.data);
+  //     console.log("friends", friends);
+  //   });
+  // }, []);
   const addFriend = () => {
-    setFriend([...friends, { picture: picture, name: name }])
-    picture = ''
-    name = ''
+    setFriend([...friends, { picture: picture, name: name }]);
+    picture = "";
+    name = "";
     console.log("friends", friends);
-  }
-  
-  const friendInfo = friends.map((friend)=> {
-      return <div key={friend.name}>
-        <img src = {friend.picture} width="100px" alt={friend.name}></img>
+  };
+
+  const friendInfo = friends.map((friend) => {
+    return (
+      <div key={friend.name}>
+        <img src={friend.picture} width="100px" alt={friend.name}></img>
         <span>{friend.name}</span>
       </div>
-    })
+    );
+  });
 
-  console.log("friendInfo", friendInfo)
+  console.log("friendInfo", friendInfo);
   return (
     <div>
       <label htmlFor="picture">Picture:</label>
@@ -44,7 +57,9 @@ export default function App() {
           console.log(e.target.value);
         }}
       />
-      <button type="button" onClick={addFriend}>Add Friend</button>
+      <button type="button" onClick={addFriend}>
+        Add Friend
+      </button>
       {friendInfo}
     </div>
   );
